@@ -56,3 +56,4 @@ server/   Node + TypeScript + Socket.io (게임 상태/판정 authoritative)
 client/   Vite + TypeScript (UI, 소켓 이벤트 수신)
 shared-emoji-data.json   더미 이모지/카테고리 데이터 원본 (server, client 양쪽에 복사됨)
 ```
+"# emoji-word-chain" 
