@@ -353,6 +353,7 @@ function renderToast(toast: ToastState): HTMLElement {
 function rejectReasonToText(reason: string): string {
   switch (reason) {
     case "NOT_YOUR_TURN": return "아직 당신의 턴이 아닙니다";
+    case "GAME_NOT_PLAYING": return "지금은 게임이 진행 중이 아닙니다";
     case "WRONG_CHAIN": return "끝말잇기 조건에 맞지 않습니다";
     case "WORD_ALREADY_USED": return "이미 사용된 단어입니다";
     case "UNKNOWN_EMOJI": return "알 수 없는 이모지입니다";

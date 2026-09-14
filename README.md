@@ -67,7 +67,7 @@ npm run dev
 - [x] 방/멀티플레이, 서버 authoritative 판정, 확정 이벤트 브로드캐스트
 - [x] 봇전 (테스트용, 단순 랜덤)
 - [ ] 이모지별 고유 확정 연출 — 현재는 공통 pulse 애니메이션만 적용된 placeholder
-- [ ] Twemoji 실제 렌더링 — 현재는 브라우저 기본 이모지 폰트로 표시 (twemoji 패키지는 설치돼 있으나 아직 미연동)
+- [x] Twemoji 실제 렌더링 — `twemoji.parse()`로 그래픽 이모지 표시, 화면 하단에 CC-BY 4.0 출처 고지 포함
 - [ ] 밸런스/모바일 터치 최적화
 
 턴별 시간표는 `server/src/game/room.ts`의 `START_TURN_MS` / `TURN_DECREASE_MS` / `MIN_TURN_MS`에서 조정 가능 (현재 임시값).
@@ -95,9 +95,10 @@ npm run dev
   Unicode 데이터는 [Unicode License](https://www.unicode.org/license.txt)를 따르며, 이 프로젝트의 이모지-단어 매핑은 CLDR 이름을 규칙적으로 가공(대문자화·기호 제거)한 2차 저작물입니다.
 
 ### Twemoji
+이모지 그래픽 렌더링에 `client/src/main.ts`의 `twemoji.parse()`로 실제 사용 중입니다.
 - 코드: [twemoji](https://github.com/twitter/twemoji) — MIT License, Copyright (c) 2021 Twitter, Inc.
 - 그래픽(이모지 이미지): Twemoji graphics — [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/), Copyright 2020 Twitter, Inc and other contributors
-- 현재는 twemoji 패키지만 설치돼 있고 실제 그래픽 렌더링은 아직 적용 전입니다. **추후 Twemoji 이미지를 실제로 표시하게 되면 CC-BY 4.0 조건에 따라 출처 표기를 별도로 유지해야 합니다.**
+- CC-BY 4.0 조건에 따라 화면 하단(footer)에 "이모지 그래픽: Twemoji (CC-BY 4.0)" 출처 고지를 앱 내에 상시 표시하고 있습니다. **이 footer 문구는 지우지 마세요** — 지우면 라이선스 조건 위반이 됩니다.
 
 ### 그 외 라이브러리
 Socket.io, Express, Vite, TypeScript 등은 각자의 오픈소스 라이선스(대부분 MIT)를 따르며, `node_modules`에 포함된 각 패키지의 `LICENSE` 파일을 참조하세요.
