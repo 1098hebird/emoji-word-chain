@@ -401,6 +401,8 @@ function renderDevWin(): HTMLElement {
   return div;
 }
 
+// Check follow-ups against the live used-word list. The candidate itself is
+// excluded because it becomes used immediately after submission.
 function hasFollowUpEmoji(word: string, usedWords: readonly string[] = []): boolean {
   const candidate = word.toUpperCase();
   const lastChar = candidate.slice(-1);

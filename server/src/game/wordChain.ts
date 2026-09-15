@@ -56,6 +56,8 @@ export function hasAvailableFollowUp(
 
   return allWords.some((nextWord) => {
     const normalized = nextWord.toUpperCase();
+    // Treat the candidate as already used, and exclude every used word.
+    // This prevents self-follows and dynamically blocks newly created dead ends.
     return (
       normalized.charAt(0) === lastChar &&
       normalized !== candidate &&

@@ -18,6 +18,8 @@ export interface Category {
 interface RawEmojiEntry {
   emoji: string;
   cldrName?: string;
+  // Optional game-specific override. It takes precedence over cldrName,
+  // so a word can be corrected without changing the emoji or loader logic.
   word?: string;
 }
 
@@ -36,9 +38,8 @@ interface RawData {
  * (e.g. "unicode-emoji-json"'s "name" field), by uppercasing and
  * stripping everything that isn't A-Z. E.g. "red apple" -> "REDAPPLE".
  *
- * Entries that already specify `word` explicitly (currently only Flags,
- * since their CLDR name has a "flag: " prefix that's awkward for
- * word-chain play) bypass this and use the given word as-is.
+ * Entries that specify `word` explicitly (flags or custom game words)
+ * bypass this and use the given word as-is.
  */
 export function nameToWord(cldrName: string): string {
   return cldrName.toUpperCase().replace(/[^A-Z]/g, "");

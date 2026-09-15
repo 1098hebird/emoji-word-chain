@@ -1,5 +1,5 @@
 {
-  "_note": "cldrName은 Unicode CLDR 공식 이모지 이름입니다. 출처: muan/unicode-emoji-json (https://github.com/muan/unicode-emoji-json, MIT License), 원본은 unicode.org CLDR 데이터. 게임에서 쓰는 canonical word는 이 이름을 '대문자화 + 공백/기호 제거'하여 자동 계산합니다 (emojiData.ts의 nameToWord 참고). Flags만 예외적으로 word를 직접 지정합니다 (공식 이름의 'flag:' 접두어를 게임에 쓰기엔 부적합하여 나라 이름만 사용). 전체 이모지 목록은 아직 일부(카테고리당 6~16개)만 채워진 상태이며, 필요 시 추가 가능합니다.",
+  "_note": "cldrName은 Unicode CLDR 공식 이모지 이름입니다. 출처: muan/unicode-emoji-json (https://github.com/muan/unicode-emoji-json, MIT License), 원본은 unicode.org CLDR 데이터. 게임에서 쓰는 canonical word는 이 이름을 '대문자화 + 공백/기호 제거'하여 자동 계산합니다 (emojiData.ts의 nameToWord 참고). word를 직접 넣으면 그 값을 우선 사용합니다. Flags처럼 공식 이름이 게임에 어울리지 않는 경우와 사용자가 직접 단어를 조정하려는 경우에 word를 사용하세요. Nature는 30종, 그 외 카테고리는 각각 10종씩 확장 가능합니다.",
   "categories": [
     {
       "id": "people",
@@ -25,7 +25,17 @@
         { "emoji": "👸", "cldrName": "princess" },
         { "emoji": "🤴", "cldrName": "prince" },
         { "emoji": "👮", "cldrName": "police officer" },
-        { "emoji": "👗", "cldrName": "dress" }
+        { "emoji": "👗", "cldrName": "dress" },
+        { "emoji": "🧒", "cldrName": "child" },
+        { "emoji": "👴", "cldrName": "old man" },
+        { "emoji": "👵", "cldrName": "old woman" },
+        { "emoji": "🧑", "cldrName": "person" },
+        { "emoji": "🧓", "cldrName": "older person" },
+        { "emoji": "👱", "cldrName": "person: blond hair" },
+        { "emoji": "🧔", "cldrName": "person: beard" },
+        { "emoji": "👼", "cldrName": "baby angel" },
+        { "emoji": "🦸", "cldrName": "superhero" },
+        { "emoji": "🦹", "cldrName": "supervillain" }
       ]
     },
     {
@@ -58,7 +68,37 @@
         { "emoji": "🌈", "cldrName": "rainbow" },
         { "emoji": "🌸", "cldrName": "cherry blossom" },
         { "emoji": "🌻", "cldrName": "sunflower" },
-        { "emoji": "🌵", "cldrName": "cactus" }
+        { "emoji": "🌵", "cldrName": "cactus" },
+        { "emoji": "🐴", "cldrName": "horse face" },
+        { "emoji": "🐮", "cldrName": "cow face" },
+        { "emoji": "🐷", "cldrName": "pig face" },
+        { "emoji": "🐭", "cldrName": "mouse face" },
+        { "emoji": "🐹", "cldrName": "hamster face" },
+        { "emoji": "🐔", "cldrName": "chicken" },
+        { "emoji": "🐲", "cldrName": "dragon face" },
+        { "emoji": "🐳", "cldrName": "whale" },
+        { "emoji": "🦈", "cldrName": "shark" },
+        { "emoji": "🐙", "cldrName": "octopus" },
+        { "emoji": "🦀", "cldrName": "crab" },
+        { "emoji": "🐝", "cldrName": "honeybee" },
+        { "emoji": "🦋", "cldrName": "butterfly" },
+        { "emoji": "🐌", "cldrName": "snail" },
+        { "emoji": "🐞", "cldrName": "lady beetle" },
+        { "emoji": "🐜", "cldrName": "ant" },
+        { "emoji": "🐑", "cldrName": "sheep" },
+        { "emoji": "🦙", "cldrName": "llama" },
+        { "emoji": "🦘", "cldrName": "kangaroo" },
+        { "emoji": "🦔", "cldrName": "hedgehog" },
+        { "emoji": "🦕", "cldrName": "sauropod" },
+        { "emoji": "🦖", "cldrName": "T-Rex" },
+        { "emoji": "🌴", "cldrName": "palm tree" },
+        { "emoji": "🌳", "cldrName": "deciduous tree" },
+        { "emoji": "🌿", "cldrName": "herb" },
+        { "emoji": "🍀", "cldrName": "four leaf clover" },
+        { "emoji": "🌾", "cldrName": "sheaf of rice" },
+        { "emoji": "🌺", "cldrName": "hibiscus" },
+        { "emoji": "🌼", "cldrName": "blossom" },
+        { "emoji": "🌞", "cldrName": "sun with face" }
       ]
     },
     {
@@ -83,7 +123,17 @@
         { "emoji": "🍫", "cldrName": "chocolate bar" },
         { "emoji": "🍪", "cldrName": "cookie" },
         { "emoji": "🍜", "cldrName": "steaming bowl" },
-        { "emoji": "🍰", "cldrName": "shortcake" }
+        { "emoji": "🍰", "cldrName": "shortcake" },
+        { "emoji": "🍏", "cldrName": "green apple" },
+        { "emoji": "🍐", "cldrName": "pear" },
+        { "emoji": "🍊", "cldrName": "tangerine" },
+        { "emoji": "🍋", "cldrName": "lemon" },
+        { "emoji": "🍑", "cldrName": "peach" },
+        { "emoji": "🍒", "cldrName": "cherries" },
+        { "emoji": "🥝", "cldrName": "kiwi fruit" },
+        { "emoji": "🍅", "cldrName": "tomato" },
+        { "emoji": "🥑", "cldrName": "avocado" },
+        { "emoji": "🥦", "cldrName": "broccoli" }
       ]
     },
     {
@@ -101,7 +151,17 @@
         { "emoji": "🎯", "cldrName": "bullseye" },
         { "emoji": "🎸", "cldrName": "guitar" },
         { "emoji": "🎹", "cldrName": "musical keyboard" },
-        { "emoji": "🏆", "cldrName": "trophy" }
+        { "emoji": "🏆", "cldrName": "trophy" },
+        { "emoji": "⚾", "cldrName": "baseball" },
+        { "emoji": "🏐", "cldrName": "volleyball" },
+        { "emoji": "🏓", "cldrName": "ping pong" },
+        { "emoji": "🥊", "cldrName": "boxing glove" },
+        { "emoji": "🎭", "cldrName": "performing arts" },
+        { "emoji": "🎬", "cldrName": "clapper board" },
+        { "emoji": "🎤", "cldrName": "microphone" },
+        { "emoji": "🎧", "cldrName": "headphone" },
+        { "emoji": "🕹️", "cldrName": "joystick" },
+        { "emoji": "🎥", "cldrName": "movie camera" }
       ]
     },
     {
@@ -120,7 +180,17 @@
         { "emoji": "🚢", "cldrName": "ship" },
         { "emoji": "🚌", "cldrName": "bus" },
         { "emoji": "🚒", "cldrName": "fire engine" },
-        { "emoji": "🚑", "cldrName": "ambulance" }
+        { "emoji": "🚑", "cldrName": "ambulance" },
+        { "emoji": "🚆", "cldrName": "rail car" },
+        { "emoji": "🚇", "cldrName": "metro" },
+        { "emoji": "🚝", "cldrName": "monorail" },
+        { "emoji": "🚞", "cldrName": "railway car" },
+        { "emoji": "🚙", "cldrName": "sport utility vehicle" },
+        { "emoji": "🛵", "cldrName": "motor scooter" },
+        { "emoji": "🏍️", "cldrName": "motorcycle" },
+        { "emoji": "🚨", "cldrName": "police car light" },
+        { "emoji": "⛽", "cldrName": "fuel pump" },
+        { "emoji": "🚦", "cldrName": "vertical traffic light" }
       ]
     },
     {
@@ -140,7 +210,17 @@
         { "emoji": "✏️", "cldrName": "pencil" },
         { "emoji": "✂️", "cldrName": "scissors" },
         { "emoji": "🎁", "cldrName": "wrapped gift" },
-        { "emoji": "🎈", "cldrName": "balloon" }
+        { "emoji": "🎈", "cldrName": "balloon" },
+        { "emoji": "📚", "cldrName": "books" },
+        { "emoji": "📰", "cldrName": "newspaper" },
+        { "emoji": "🔦", "cldrName": "flashlight" },
+        { "emoji": "🕯️", "cldrName": "candle" },
+        { "emoji": "🧯", "cldrName": "fire extinguisher" },
+        { "emoji": "🧲", "cldrName": "magnet" },
+        { "emoji": "🧭", "cldrName": "compass" },
+        { "emoji": "⏰", "cldrName": "alarm clock" },
+        { "emoji": "📌", "cldrName": "pushpin" },
+        { "emoji": "🖼️", "cldrName": "framed picture" }
       ]
     },
     {
@@ -160,7 +240,17 @@
         { "emoji": "➕", "cldrName": "plus sign" },
         { "emoji": "🔔", "cldrName": "bell" },
         { "emoji": "🎵", "cldrName": "musical note" },
-        { "emoji": "💯", "cldrName": "hundred points" }
+        { "emoji": "💯", "cldrName": "hundred points" },
+        { "emoji": "🔵", "cldrName": "blue circle" },
+        { "emoji": "🟢", "cldrName": "green circle" },
+        { "emoji": "⬛", "cldrName": "black large square" },
+        { "emoji": "⬜", "cldrName": "white large square" },
+        { "emoji": "🔺", "cldrName": "red triangle pointed up" },
+        { "emoji": "🔻", "cldrName": "red triangle pointed down" },
+        { "emoji": "💫", "cldrName": "dizzy" },
+        { "emoji": "✨", "cldrName": "sparkles" },
+        { "emoji": "💥", "cldrName": "collision" },
+        { "emoji": "🎶", "cldrName": "musical notes" }
       ]
     },
     {
@@ -178,7 +268,17 @@
         { "emoji": "🇨🇦", "word": "CANADA" },
         { "emoji": "🇪🇸", "word": "SPAIN" },
         { "emoji": "🇧🇷", "word": "BRAZIL" },
-        { "emoji": "🇦🇺", "word": "AUSTRALIA" }
+        { "emoji": "🇦🇺", "word": "AUSTRALIA" },
+        { "emoji": "🇲🇽", "word": "MEXICO" },
+        { "emoji": "🇷🇺", "word": "RUSSIA" },
+        { "emoji": "🇨🇳", "word": "CHINA" },
+        { "emoji": "🇬🇷", "word": "GREECE" },
+        { "emoji": "🇳🇱", "word": "NETHERLANDS" },
+        { "emoji": "🇸🇪", "word": "SWEDEN" },
+        { "emoji": "🇳🇴", "word": "NORWAY" },
+        { "emoji": "🇿🇦", "word": "SOUTHAFRICA" },
+        { "emoji": "🇦🇷", "word": "ARGENTINA" },
+        { "emoji": "🇪🇬", "word": "EGYPT" }
       ]
     }
   ]
