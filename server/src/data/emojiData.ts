@@ -45,9 +45,14 @@ export function nameToWord(cldrName: string): string {
   return cldrName.toUpperCase().replace(/[^A-Z]/g, "");
 }
 
-const raw: RawData = JSON.parse(
-  fs.readFileSync(path.join(__dirname, "emojiData.json"), "utf-8")
-);
+// The source tree reads the shared file directly. The build copies that same
+// file into dist/data so the deployed server remains self-contained.
+const localAsset = path.join(__dirname, "emojiData.json");
+const sharedAsset = path.resolve(__dirname, "../../../shared-emoji-data.json");
+const dataPath = __dirname.includes(`${path.sep}dist${path.sep}`)
+  ? localAsset
+  : sharedAsset;
+const raw: RawData = JSON.parse(fs.readFileSync(dataPath, "utf-8"));
 
 export const CATEGORIES: Category[] = raw.categories.map((c) => ({
   id: c.id,
@@ -59,7 +64,7 @@ export const CATEGORIES: Category[] = raw.categories.map((c) => ({
 }));
 
 // Flat lookup: emoji -> canonical word. This is the SERVER'S authoritative
-// source of truth. Clients may have their own copy for UI purposes, but the
+// source of truth. The client reads the same shared data for UI only, but the
 // server never trusts a word sent by the client — it always looks it up here.
 export const EMOJI_TO_WORD: Map<string, string> = new Map();
 const seenWords = new Map<string, string>(); // word -> first emoji that used it

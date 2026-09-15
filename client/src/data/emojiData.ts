@@ -1,4 +1,6 @@
-import raw from "./emojiData.json";
+// The shared JSON file is the single source of truth for emoji words.
+// Vite bundles it into the client, so no separate client copy is needed.
+import raw from "../../../shared-emoji-data.json";
 
 export interface EmojiEntry {
   emoji: string;
@@ -31,10 +33,9 @@ function nameToWord(cldrName: string): string {
   return cldrName.toUpperCase().replace(/[^A-Z]/g, "");
 }
 
-// NOTE: 이 데이터는 UI(팝업, 회색 처리)용 로컬 사본이다.
+// NOTE: 이 데이터는 UI(팝업, 회색 처리)용으로 공유 원본을 직접 읽는다.
 // 실제 게임 판정은 항상 서버가 독립적으로 재검증하므로,
-// 이 데이터가 서버와 어긋나거나 클라이언트에서 조작되어도
-// 잘못된 제출은 서버가 emoji:rejected로 되돌린다.
+// 클라이언트에서 데이터를 조작해도 잘못된 제출은 서버가 emoji:rejected로 되돌린다.
 export const CATEGORIES: Category[] = (
   raw as { categories: RawCategory[] }
 ).categories.map((c) => ({

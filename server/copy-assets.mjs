@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const src = path.join("src", "data", "emojiData.json");
+const src = path.join("..", "shared-emoji-data.json");
 const destDir = path.join("dist", "data");
 const dest = path.join(destDir, "emojiData.json");
 
