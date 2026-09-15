@@ -12,20 +12,11 @@
 3. 직전 이모지의 단어 끝 글자로 시작하는 단어의 이모지를 이어서 제출 (같은 이모지 재사용 불가)
 4. 시간 안에 못 내거나 잘못된 단어를 내면 패배
 
-2인 플레이는 링크로 접속해서 플레이어가 서로 방 코드를 공유하면 됩니다.
+2인 플레이는 링크로 접속해서 방장인 플레이어가 방 코드를 공유하면 됩니다.
 
 ## 기술 스택
 
 Node.js · TypeScript · [Socket.io](https://socket.io/) (서버가 모든 판정을 직접 검증) · [Vite](https://vitejs.dev/)
-
-## 로컬 실행
-
-```bash
-npm install
-npm run install:all
-npm run dev
-```
-`http://localhost:5173` 접속.
 
 ## 개발 도구
 
