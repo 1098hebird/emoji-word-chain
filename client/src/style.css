@@ -142,6 +142,14 @@ input[type="text"]:focus, input[type="password"]:focus {
   outline: none;
   border-color: var(--primary);
 }
+[data-theme="light"] input[type="text"],
+[data-theme="light"] input[type="password"] {
+  color: #1c1712;
+  caret-color: #1c1712;
+}
+[data-theme="light"] input::placeholder {
+  color: var(--text-muted);
+}
 
 button {
   padding: 12px 16px;
