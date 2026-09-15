@@ -35,6 +35,7 @@ export type RejectReason =
   | "UNKNOWN_EMOJI"
   | "WRONG_CHAIN"
   | "WORD_ALREADY_USED"
+  | "NO_FOLLOW_UP"
   | "TIME_OUT";
 
 export interface EmojiRejectedPayload {

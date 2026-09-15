@@ -4,6 +4,7 @@ export type RejectReason =
   | "UNKNOWN_EMOJI"
   | "WRONG_CHAIN"
   | "WORD_ALREADY_USED"
+  | "NO_FOLLOW_UP"
   | "TIME_OUT";
 
 export interface ChainCheckResult {
@@ -43,4 +44,22 @@ export function checkChain(
   }
 
   return { valid: true };
+}
+
+export function hasAvailableFollowUp(
+  word: string,
+  usedWords: ReadonlySet<string>,
+  allWords: readonly string[]
+): boolean {
+  const candidate = word.toUpperCase();
+  const lastChar = candidate.slice(-1);
+
+  return allWords.some((nextWord) => {
+    const normalized = nextWord.toUpperCase();
+    return (
+      normalized.charAt(0) === lastChar &&
+      normalized !== candidate &&
+      !usedWords.has(normalized)
+    );
+  });
 }

@@ -332,7 +332,7 @@ function renderPlaying(): HTMLElement {
     cell.textContent = entry.emoji;
 
     const isUsed = room?.usedWords.includes(entry.word) ?? false;
-    const isDeadEnd = !hasFollowUpEmoji(entry.word);
+    const isDeadEnd = !hasFollowUpEmoji(entry.word, room?.usedWords ?? []);
     const disabled = !isMyTurn || isUsed || isDeadEnd;
 
     if (disabled) {
@@ -401,9 +401,19 @@ function renderDevWin(): HTMLElement {
   return div;
 }
 
-function hasFollowUpEmoji(word: string): boolean {
-  const lastChar = word.slice(-1).toUpperCase();
-  return getAllEmojis().some((e) => e.word.charAt(0).toUpperCase() === lastChar);
+function hasFollowUpEmoji(word: string, usedWords: readonly string[] = []): boolean {
+  const candidate = word.toUpperCase();
+  const lastChar = candidate.slice(-1);
+  const used = new Set(usedWords.map((usedWord) => usedWord.toUpperCase()));
+
+  return getAllEmojis().some((entry) => {
+    const nextWord = entry.word.toUpperCase();
+    return (
+      nextWord.charAt(0) === lastChar &&
+      nextWord !== candidate &&
+      !used.has(nextWord)
+    );
+  });
 }
 
 // ---------- Popup ----------
@@ -454,6 +464,7 @@ function rejectReasonToText(reason: string): string {
     case "GAME_NOT_PLAYING": return "지금은 게임이 진행 중이 아닙니다";
     case "WRONG_CHAIN": return "끝말잇기 조건에 맞지 않습니다";
     case "WORD_ALREADY_USED": return "이미 사용된 단어입니다";
+    case "NO_FOLLOW_UP": return "이후에 이어질 이모지가 없습니다";
     case "UNKNOWN_EMOJI": return "알 수 없는 이모지입니다";
     case "TIME_OUT": return "시간이 초과되었습니다";
     case "ROOM_NOT_FOUND": return "방을 찾을 수 없습니다";

@@ -1,7 +1,7 @@
 import { EventEmitter } from "node:events";
 import { randomUUID } from "node:crypto";
 import { getAllEmojis, getCanonicalWord } from "../data/emojiData.js";
-import { checkChain, type RejectReason } from "./wordChain.js";
+import { checkChain, hasAvailableFollowUp, type RejectReason } from "./wordChain.js";
 
 export interface RoomPlayer {
   id: string;
@@ -24,6 +24,10 @@ function turnTimeMs(turnCount: number): number {
 
 const BOT_MIN_DELAY_MS = 1_000;
 const BOT_MAX_DELAY_MS = 3_000;
+
+function getAllWords(): string[] {
+  return getAllEmojis().map((emoji) => emoji.word);
+}
 
 export interface EmojiConfirmedPayload {
   emoji: string;
@@ -116,7 +120,12 @@ export class Room extends EventEmitter {
 
   private assignStartingWord() {
     const all = getAllEmojis();
-    const pick = all[Math.floor(Math.random() * all.length)];
+    const allWords = getAllWords();
+    const playable = all.filter((emoji) =>
+      hasAvailableFollowUp(emoji.word, this.usedWords, allWords)
+    );
+    const candidates = playable.length > 0 ? playable : all;
+    const pick = candidates[Math.floor(Math.random() * candidates.length)];
     this.lastWord = pick.word;
     this.usedWords.add(pick.word);
     // Note: the starting emoji itself is not "confirmed" by a player;
@@ -150,9 +159,13 @@ export class Room extends EventEmitter {
 
   private playBotMove() {
     if (this.status !== "playing") return;
-    const candidates = getAllEmojis().filter((e) => {
-      const result = checkChain(e.word, this.lastWord, this.usedWords);
-      return result.valid;
+    const allWords = getAllWords();
+    const candidates = getAllEmojis().filter((emoji) => {
+      const result = checkChain(emoji.word, this.lastWord, this.usedWords);
+      return (
+        result.valid &&
+        hasAvailableFollowUp(emoji.word, this.usedWords, allWords)
+      );
     });
 
     if (candidates.length === 0) {
@@ -194,6 +207,11 @@ export class Room extends EventEmitter {
       if (winner && (result.reason === "WRONG_CHAIN" || result.reason === "WORD_ALREADY_USED")) {
         this.endGame(winner.id, result.reason);
       }
+      return;
+    }
+
+    if (!hasAvailableFollowUp(word, this.usedWords, getAllWords())) {
+      this.emit("emojiRejected", { playerId, reason: "NO_FOLLOW_UP" });
       return;
     }
 
