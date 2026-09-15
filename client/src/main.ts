@@ -11,6 +11,8 @@ import type {
 } from "./types";
 
 const app = document.getElementById("app")!;
+const isDevelopment = import.meta.env.DEV;
+const DEV_WIN_PATH = "/dev/win";
 
 type Screen = "lobby" | "waiting" | "playing" | "gameover";
 
@@ -50,24 +52,62 @@ const state: AppState = {
 
 };
 
+function normalizePath(path: string): string {
+  return path.length > 1 ? path.replace(/\/+$/, "") : path;
+}
+
+function isDevWinRoute(): boolean {
+  return isDevelopment && normalizePath(window.location.pathname) === DEV_WIN_PATH;
+}
+
+function navigateTo(path: string) {
+  window.history.pushState({}, "", path);
+  render();
+}
+
+function requestDevWin() {
+  if (
+    !isDevelopment ||
+    devWinRequested ||
+    state.screen !== "playing"
+  ) {
+    return;
+  }
+  devWinRequested = true;
+  socket.emit("dev:win");
+}
+
 function applyTheme() {
   document.documentElement.setAttribute("data-theme", state.theme);
 }
 applyTheme();
 
+function updateThemeButtons() {
+  const isDark = state.theme === "dark";
+  document.querySelectorAll<HTMLButtonElement>("#themeToggleBtn").forEach((button) => {
+    const isCompact = button.closest(".hud") !== null;
+    button.textContent = isDark
+      ? (isCompact ? "☀️" : "☀️ 라이트 모드")
+      : (isCompact ? "🌙" : "🌙 다크 모드");
+  });
+}
+
 function toggleTheme() {
   state.theme = state.theme === "dark" ? "light" : "dark";
   localStorage.setItem("emoji_theme", state.theme);
   applyTheme();
-  render();
+  updateThemeButtons();
 }
 
 let timerInterval: number | null = null;
+let devWinRequested = false;
 
 function render() {
   applyTheme();
+  if (!isDevWinRoute()) devWinRequested = false;
   app.innerHTML = "";
-  if (state.screen === "lobby") app.appendChild(renderLobby());
+  if (isDevWinRoute()) app.appendChild(renderDevWin());
+  else if (state.screen === "lobby") app.appendChild(renderLobby());
   else if (state.screen === "waiting") app.appendChild(renderWaiting());
   else if (state.screen === "playing") app.appendChild(renderPlaying());
   else if (state.screen === "gameover") app.appendChild(renderGameOver());
@@ -243,7 +283,19 @@ function renderPlaying(): HTMLElement {
     }
   };
 
-  
+  if (isDevelopment) {
+    const devWinLink = document.createElement("a");
+    devWinLink.href = DEV_WIN_PATH;
+    devWinLink.className = "dev-link";
+    devWinLink.id = "devWinLink";
+    devWinLink.textContent = "개발 승리";
+    devWinLink.onclick = (event) => {
+      event.preventDefault();
+      navigateTo(DEV_WIN_PATH);
+    };
+    hud.querySelector<HTMLDivElement>(".hud-actions")!.appendChild(devWinLink);
+  }
+
 
   div.appendChild(hud);
 
@@ -300,6 +352,52 @@ function renderPlaying(): HTMLElement {
   }
   div.appendChild(grid);
 
+  return div;
+}
+
+function renderDevWin(): HTMLElement {
+  const div = document.createElement("div");
+  div.className = "screen";
+  const canForceWin = state.screen === "playing";
+
+  div.innerHTML = `
+    <div class="top-bar">
+      <span></span>
+      <button type="button" class="theme-toggle-btn" id="themeToggleBtn">
+        ${state.theme === "dark" ? "☀️ 라이트 모드" : "🌙 다크 모드"}
+      </button>
+    </div>
+    <h1>개발 전용 승리</h1>
+    <p style="text-align:center;color:var(--text-muted);">
+      별도 승리 상태가 아니라 기존 승리 처리 경로로 게임을 종료합니다.
+    </p>
+    ${canForceWin
+      ? `<button type="button" id="devWinButton" ${devWinRequested ? "disabled" : ""}>
+           ${devWinRequested ? "승리 처리 중..." : "기존 승리 처리로 종료"}
+         </button>`
+      : `<p style="text-align:center;">진행 중인 게임이 없습니다.</p>`}
+    <a href="/" class="dev-link" id="devWinBackLink">게임으로 돌아가기</a>
+    <footer class="attribution">
+      이 페이지는 개발 환경에서만 사용할 수 있습니다.
+    </footer>
+  `;
+
+  div.querySelector<HTMLButtonElement>("#themeToggleBtn")!.onclick = toggleTheme;
+
+  const backButton = div.querySelector<HTMLAnchorElement>("#devWinBackLink");
+  if (backButton) {
+    backButton.onclick = (event) => {
+      event.preventDefault();
+      navigateTo("/");
+    };
+  }
+
+  const devWinButton = div.querySelector<HTMLButtonElement>("#devWinButton");
+  if (devWinButton) {
+    devWinButton.onclick = requestDevWin;
+  }
+
+  if (canForceWin) requestDevWin();
   return div;
 }
 
@@ -479,15 +577,14 @@ socket.on("emoji:rejected", (payload: EmojiRejectedPayload) => {
 socket.on("game:over", (payload: GameOverPayload) => {
   state.lastGameOver = payload;
   state.screen = "gameover";
+  devWinRequested = false;
+  if (isDevWinRoute()) {
+    window.history.replaceState({}, "", "/");
+  }
   if (timerInterval) window.clearInterval(timerInterval);
   render();
 });
 
-// F2: dev shortcut – force a win (playing screen only)
-document.addEventListener("keydown", (e) => {
-  if (e.key === "F2" && state.screen === "playing") {
-    socket.emit("dev:win");
-  }
-});
+window.addEventListener("popstate", render);
 
 render();

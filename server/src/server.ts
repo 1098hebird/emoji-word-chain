@@ -9,6 +9,7 @@ import type { EmojiConfirmedPayload, GameOverPayload } from "./game/room.js";
 import type { RejectReason } from "./game/wordChain.js";
 
 const PORT = process.env.PORT ? Number(process.env.PORT) : 3001;
+const isDevelopment = process.env.NODE_ENV === "development";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // server/dist/server.js 기준 ../../client/dist
@@ -182,13 +183,15 @@ io.on("connection", (socket: Socket) => {
     broadcastState(room);
   });
 
-  // F2 dev shortcut: force a win for the requesting player
   socket.on("dev:win", () => {
+    if (!isDevelopment) return;
     const idx = socketIndex.get(socket.id);
     if (!idx) return;
     const room = rooms.get(idx.roomId);
     if (!room || room.status !== "playing") return;
-    room.handleDisconnect(room.players.find((p) => p.id !== idx.playerId)!.id);
+    const opponent = room.otherPlayer(idx.playerId);
+    if (!opponent) return;
+    room.handleDisconnect(opponent.id);
     broadcastState(room);
   });
 
