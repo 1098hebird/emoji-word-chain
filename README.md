@@ -20,7 +20,7 @@ Node.js · TypeScript · [Socket.io](https://socket.io/) (서버가 모든 판�
 
 ## 개발 도구
 
-개발 과정에서 Google **Gemini**와 Anthropic **Claude** AI를 활용했습니다.
+개발 과정에서 Google **Gemini**와 Anthropic **Claude** AI, Kilo code를 활용했습니다.
 
 ## 출처 및 라이선스
 
