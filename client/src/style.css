@@ -332,6 +332,7 @@ img.emoji {
   flex: 1;
   scrollbar-gutter: stable;
   scrollbar-width: thin;
+  overscroll-behavior: contain;
 }
 .emoji-grid::-webkit-scrollbar {
   width: 4px;
