@@ -62,7 +62,7 @@ function wireRoomEvents(room: Room) {
     io.to(room.id).emit("game:started", payload);
   });
 
-  room.on("turnStart", (payload: { playerId: string; deadline: number }) => {
+  room.on("turnStart", (payload: { playerId: string; deadline: number; durationMs: number }) => {
     io.to(room.id).emit("turn:start", payload);
     broadcastState(room);
   });

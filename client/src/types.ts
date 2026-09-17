@@ -18,6 +18,7 @@ export interface GameStartedPayload {
 export interface TurnStartPayload {
   playerId: string;
   deadline: number;
+  durationMs: number;
 }
 
 export interface EmojiConfirmedPayload {

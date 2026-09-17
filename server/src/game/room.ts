@@ -130,6 +130,7 @@ export class Room extends EventEmitter {
     this.emit("turnStart", {
       playerId: player.id,
       deadline: this.deadline,
+      durationMs: ms,
     });
 
     this.clearTimers();

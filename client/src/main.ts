@@ -100,6 +100,7 @@ function toggleTheme() {
 }
 
 let timerInterval: number | null = null;
+let timerEndTime: number = 0;
 let devWinRequested = false;
 
 function render() {
@@ -535,8 +536,8 @@ function startTimerLoop() {
   if (timerInterval) window.clearInterval(timerInterval);
   timerInterval = window.setInterval(() => {
     const el = document.getElementById("timerText");
-    if (!el || !state.room?.deadline) return;
-    const remainMs = state.room.deadline - Date.now();
+    if (!el || !timerEndTime) return;
+    const remainMs = timerEndTime - Date.now();
     const remainSec = Math.max(0, Math.ceil(remainMs / 1000));
     el.textContent = `${remainSec}s`;
     el.classList.toggle("warn", remainSec <= 5);
@@ -557,7 +558,8 @@ socket.on("game:started", (_payload: GameStartedPayload) => {
   render();
 });
 
-socket.on("turn:start", (_payload: TurnStartPayload) => {
+socket.on("turn:start", (payload: TurnStartPayload) => {
+  timerEndTime = Date.now() + payload.durationMs;
   render();
   startTimerLoop();
 });
@@ -581,7 +583,8 @@ socket.on("game:over", (payload: GameOverPayload) => {
   if (isDevWinRoute()) {
     window.history.replaceState({}, "", "/");
   }
-  if (timerInterval) window.clearInterval(timerInterval);
+   if (timerInterval) window.clearInterval(timerInterval);
+  timerEndTime = 0;
   render();
 });
 
