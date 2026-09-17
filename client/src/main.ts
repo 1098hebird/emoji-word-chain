@@ -26,7 +26,7 @@ interface AppState {
   myPlayerId: string | null;
   room: RoomStatePayload | null;
   activeCategoryId: string;
-  chainHistory: string[]; // confirmed emojis only, in order
+  chainHistory: string[];
   popupEmoji: string | null;
   toast: ToastState | null;
   lastGameOver: GameOverPayload | null;
@@ -127,7 +127,6 @@ function showToast(message: string, type: "info" | "error" = "error") {
   render();
 }
 
-// ---------- Lobby ----------
 function renderLobby(): HTMLElement {
   const div = document.createElement("div");
   div.className = "screen";
@@ -196,7 +195,6 @@ function renderLobby(): HTMLElement {
   return div;
 }
 
-// ---------- Waiting ----------
 function renderWaiting(): HTMLElement {
   const div = document.createElement("div");
   div.className = "screen";
@@ -249,7 +247,6 @@ function renderWaiting(): HTMLElement {
   return div;
 }
 
-// ---------- Playing ----------
 function renderPlaying(): HTMLElement {
   const div = document.createElement("div");
   div.className = "screen playing-screen";
@@ -401,8 +398,6 @@ function renderDevWin(): HTMLElement {
   return div;
 }
 
-// Check follow-ups against the live used-word list. The candidate itself is
-// excluded because it becomes used immediately after submission.
 function hasFollowUpEmoji(word: string, usedWords: readonly string[] = []): boolean {
   const candidate = word.toUpperCase();
   const lastChar = candidate.slice(-1);
@@ -418,7 +413,6 @@ function hasFollowUpEmoji(word: string, usedWords: readonly string[] = []): bool
   });
 }
 
-// ---------- Popup ----------
 function renderPopup(emoji: string): HTMLElement {
   const overlay = document.createElement("div");
   overlay.className = "popup-overlay";
@@ -446,7 +440,6 @@ function renderPopup(emoji: string): HTMLElement {
   return overlay;
 }
 
-// ---------- Toast ----------
 function renderToast(toast: ToastState): HTMLElement {
   const div = document.createElement("div");
   div.className = `toast ${toast.type || "error"}`;
@@ -475,14 +468,12 @@ function rejectReasonToText(reason: string): string {
   }
 }
 
-// ---------- Game Over ----------
 function renderGameOver(): HTMLElement {
   const div = document.createElement("div");
   div.className = "screen game-over-box";
   const result = state.lastGameOver;
   const won = result?.winnerId === state.myPlayerId;
 
-  // Animated icon
   const icon = document.createElement("span");
   icon.className = `gameover-icon ${won ? "trophy" : "skull"}`;
   icon.textContent = won ? "🏆" : "💀";
@@ -540,7 +531,6 @@ function gameOverReasonToText(reason?: GameOverPayload["reason"]): string {
   }
 }
 
-// ---------- Timer ticking ----------
 function startTimerLoop() {
   if (timerInterval) window.clearInterval(timerInterval);
   timerInterval = window.setInterval(() => {
@@ -553,7 +543,6 @@ function startTimerLoop() {
   }, 250);
 }
 
-// ---------- Socket event wiring ----------
 socket.on("room:state", (payload: RoomStatePayload) => {
   state.room = payload;
   if (state.screen === "waiting" && payload.status === "playing") {
@@ -575,8 +564,6 @@ socket.on("turn:start", (_payload: TurnStartPayload) => {
 
 socket.on("emoji:confirmed", (payload: EmojiConfirmedPayload) => {
   state.chainHistory.push(payload.emoji);
-  // Confirmation flourish: flash the last emoji in the history strip.
-  // (Per-emoji unique effects are a later phase; this is a generic placeholder.)
   render();
   const historyEls = document.querySelectorAll(".chain-history span");
   const lastEl = historyEls[historyEls.length - 1];

@@ -6,13 +6,12 @@ import { checkChain, hasAvailableFollowUp, type RejectReason } from "./wordChain
 export interface RoomPlayer {
   id: string;
   nickname: string;
-  socketId: string | null; // null for bot
+  socketId: string | null;
   isBot: boolean;
 }
 
 export type RoomStatus = "waiting" | "playing" | "finished";
 
-// Turn time starts at 30s and decreases by 2s each turn, minimum 10s.
 const START_TURN_MS = 30_000;
 const TURN_DECREASE_MS = 2_000;
 const MIN_TURN_MS = 10_000;
@@ -49,12 +48,6 @@ export interface GameOverPayload {
     | "WORD_ALREADY_USED";
 }
 
-/**
- * Room owns all authoritative game state and rules. It only communicates
- * outward via events; server.ts is responsible for translating those into
- * Socket.io messages. Room never trusts client-provided words — it always
- * looks up the canonical word for a submitted emoji itself.
- */
 export class Room extends EventEmitter {
   readonly id: string;
   players: RoomPlayer[] = [];
@@ -77,7 +70,6 @@ export class Room extends EventEmitter {
   }
 
   private static generateRoomCode(): string {
-    // 6-digit numeric code, easy to type/share.
     return Math.floor(100000 + Math.random() * 900000).toString();
   }
 
@@ -100,7 +92,6 @@ export class Room extends EventEmitter {
     return this.players.find((p) => p.id !== playerId);
   }
 
-  /** Starts the match: host always goes first, server assigns a starting word. */
   start() {
     if (this.players.length !== 2) throw new Error("NOT_ENOUGH_PLAYERS");
     this.status = "playing";
@@ -127,9 +118,7 @@ export class Room extends EventEmitter {
     const candidates = playable.length > 0 ? playable : all;
     const pick = candidates[Math.floor(Math.random() * candidates.length)];
     this.lastWord = pick.word;
-    this.usedWords.add(pick.word);
-    // Note: the starting emoji itself is not "confirmed" by a player;
-    // clients should just render lastWord's implied emoji as the seed.
+    this.usedWords.add(pick.word.toUpperCase());
     this.emit("gameStarted", { startingEmoji: pick.emoji, startingWord: pick.word });
   }
 
@@ -169,7 +158,6 @@ export class Room extends EventEmitter {
     });
 
     if (candidates.length === 0) {
-      // Bot has no valid move -> bot loses.
       this.endGame(this.otherPlayer(this.currentPlayer().id)!.id, "NO_VALID_MOVE");
       return;
     }
@@ -178,11 +166,6 @@ export class Room extends EventEmitter {
     this.submitEmoji(this.currentPlayer().id, choice.emoji);
   }
 
-  /**
-   * Authoritative handling of a player's emoji submission. Returns nothing;
-   * emits either "emojiConfirmed" (broadcast to all) or "emojiRejected"
-   * (targeted to the submitting player) via EventEmitter.
-   */
   submitEmoji(playerId: string, emoji: string) {
     if (this.status !== "playing") {
       this.emit("emojiRejected", { playerId, reason: "GAME_NOT_PLAYING" as RejectReason });
@@ -215,9 +198,8 @@ export class Room extends EventEmitter {
       return;
     }
 
-    // Valid move: update state.
     this.lastWord = word;
-    this.usedWords.add(word);
+    this.usedWords.add(word.toUpperCase());
     this.turnCount += 1;
     this.clearTimers();
 
@@ -230,7 +212,7 @@ export class Room extends EventEmitter {
       playerId,
       timestamp: Date.now(),
       nextPlayerId: this.players[nextIndex].id,
-      deadline: null, // filled in once next turn actually begins
+      deadline: null,
     };
     this.emit("emojiConfirmed", payload);
 

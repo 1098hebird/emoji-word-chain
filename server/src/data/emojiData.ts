@@ -6,7 +6,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export interface EmojiEntry {
   emoji: string;
-  word: string; // canonical word, always stored uppercase
+  word: string;
 }
 
 export interface Category {
@@ -18,8 +18,6 @@ export interface Category {
 interface RawEmojiEntry {
   emoji: string;
   cldrName?: string;
-  // Optional game-specific override. It takes precedence over cldrName,
-  // so a word can be corrected without changing the emoji or loader logic.
   word?: string;
 }
 
@@ -33,20 +31,14 @@ interface RawData {
   categories: RawCategory[];
 }
 
-/**
- * Derives the canonical game word from a Unicode CLDR emoji name
- * (e.g. "unicode-emoji-json"'s "name" field), by uppercasing and
- * stripping everything that isn't A-Z. E.g. "red apple" -> "REDAPPLE".
- *
- * Entries that specify `word` explicitly (flags or custom game words)
- * bypass this and use the given word as-is.
- */
-export function nameToWord(cldrName: string): string {
-  return cldrName.toUpperCase().replace(/[^A-Z]/g, "");
+function nameToWord(cldrName: string): string {
+  return cldrName
+    .trim()
+    .split(/\s+/)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
 }
 
-// The source tree reads the shared file directly. The build copies that same
-// file into dist/data so the deployed server remains self-contained.
 const localAsset = path.join(__dirname, "emojiData.json");
 const sharedAsset = path.resolve(__dirname, "../../../shared-emoji-data.json");
 const dataPath = __dirname.includes(`${path.sep}dist${path.sep}`)
@@ -59,15 +51,12 @@ export const CATEGORIES: Category[] = raw.categories.map((c) => ({
   name: c.name,
   emojis: c.emojis.map((e) => ({
     emoji: e.emoji,
-    word: (e.word ?? nameToWord(e.cldrName ?? "")).toUpperCase(),
+    word: e.word ?? nameToWord(e.cldrName ?? ""),
   })),
 }));
 
-// Flat lookup: emoji -> canonical word. This is the SERVER'S authoritative
-// source of truth. The client reads the same shared data for UI only, but the
-// server never trusts a word sent by the client — it always looks it up here.
 export const EMOJI_TO_WORD: Map<string, string> = new Map();
-const seenWords = new Map<string, string>(); // word -> first emoji that used it
+const seenWords = new Map<string, string>();
 for (const cat of CATEGORIES) {
   for (const e of cat.emojis) {
     EMOJI_TO_WORD.set(e.emoji, e.word);

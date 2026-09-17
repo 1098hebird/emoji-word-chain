@@ -92,7 +92,6 @@ body {
   margin-right: auto;
 }
 
-/* Playing screen uses full app width for the emoji grid */
 .playing-screen {
   max-width: 100%;
   padding: 0;
@@ -193,7 +192,6 @@ label.check {
   cursor: pointer;
 }
 
-/* Twemoji image styling */
 img.emoji {
   width: 1em;
   height: 1em;
@@ -203,7 +201,6 @@ img.emoji {
   pointer-events: none;
 }
 
-/* Ingame HUD */
 .hud {
   display: flex;
   justify-content: space-between;
@@ -322,7 +319,6 @@ img.emoji {
   color: var(--primary-text);
 }
 
-/* Compact emoji grid */
 .emoji-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -377,7 +373,6 @@ img.emoji {
   border-color: var(--border);
 }
 
-/* Room code box in waiting screen */
 .room-code-box {
   display: flex;
   align-items: center;
@@ -409,7 +404,6 @@ img.emoji {
   background: var(--card-hover);
 }
 
-/* Popup */
 .popup-overlay {
   position: fixed;
   inset: 0;
@@ -478,7 +472,6 @@ img.emoji {
   to { opacity: 1; transform: translate(-50%, 0); }
 }
 
-/* Game over animations */
 @keyframes trophyLand {
   0%   { transform: translateY(-40px) rotate(-8deg); opacity: 0.6; }
   30%  { transform: translateY(-18px) rotate(10deg); opacity: 1; }

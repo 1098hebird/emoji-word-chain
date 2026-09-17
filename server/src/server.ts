@@ -12,19 +12,16 @@ const PORT = process.env.PORT ? Number(process.env.PORT) : 3001;
 const isDevelopment = process.env.NODE_ENV === "development";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-// server/dist/server.js 기준 ../../client/dist
 const clientDistPath = path.resolve(__dirname, "../../client/dist");
 
 const app = express();
 
 if (fs.existsSync(clientDistPath)) {
-  // 배포/터널링용: 빌드된 client를 같은 포트에서 같이 서빙
   app.use(express.static(clientDistPath));
   app.get("*", (_req, res) => {
     res.sendFile(path.join(clientDistPath, "index.html"));
   });
 } else {
-  // 로컬 개발 중 (client는 vite dev 서버 :5173 에서 따로 실행됨)
   app.get("/", (_req, res) => {
     res.send("emoji-word-chain server running (dev mode - client is on :5173)");
   });
@@ -32,11 +29,10 @@ if (fs.existsSync(clientDistPath)) {
 
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
-  cors: { origin: "*" }, // TODO: 배포 시 실제 클라이언트 origin으로 제한
+    cors: { origin: "*" },
 });
 
 const rooms = new Map<string, Room>();
-// socketId -> { roomId, playerId }
 const socketIndex = new Map<string, { roomId: string; playerId: string }>();
 
 function publicRoomState(room: Room) {
@@ -195,9 +191,6 @@ io.on("connection", (socket: Socket) => {
     broadcastState(room);
   });
 
-  // 대기 취소 / 기권 / 로비로 나가기 — 클라이언트가 페이지 이동만 하고
-  // 소켓 연결은 유지하는 경우이므로 disconnect 이벤트로는 잡히지 않는다.
-  // 별도로 처리해서 상대방에게 즉시 알리고 방을 정리한다.
   socket.on("room:leave", () => {
     const idx = socketIndex.get(socket.id);
     if (!idx) return;
@@ -209,16 +202,13 @@ io.on("connection", (socket: Socket) => {
     if (!room) return;
 
     if (room.status === "playing") {
-      // 진행 중이던 게임은 상대방 승리로 즉시 종료 (handleDisconnect와 동일 처리)
       room.handleDisconnect(idx.playerId);
     } else if (room.status === "waiting") {
-      // 상대가 들어오기 전 대기 중 나간 경우 — 혼자였으므로 방을 바로 정리
       room.destroy();
       rooms.delete(idx.roomId);
       return;
     }
 
-    // 60초 뒤에도 아무도 이 방을 참조하지 않으면 완전히 정리 (disconnect 핸들러와 동일한 유예)
     setTimeout(() => {
       const stillReferenced = [...socketIndex.values()].some(
         (v) => v.roomId === idx.roomId
@@ -240,8 +230,6 @@ io.on("connection", (socket: Socket) => {
     const room = rooms.get(idx.roomId);
     if (!room) return;
     room.handleDisconnect(idx.playerId);
-    // Prototype: no reconnection support. Clean up room after it's over
-    // and both real sockets have left, to avoid unbounded memory growth.
     setTimeout(() => {
       const stillReferenced = [...socketIndex.values()].some(
         (v) => v.roomId === room.id

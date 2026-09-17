@@ -12,15 +12,6 @@ export interface ChainCheckResult {
   reason?: RejectReason;
 }
 
-/**
- * Pure validation of whether `nextWord` may legally follow `lastWord`
- * under standard word-chain rules (last letter -> first letter), and
- * that it hasn't been used yet in this game.
- *
- * `lastWord` is null only for the very first move of a game, in which
- * case any known word is accepted (the server pre-assigns a starting
- * emoji, but this function stays generic).
- */
 export function checkChain(
   nextWord: string,
   lastWord: string | null,
@@ -56,8 +47,6 @@ export function hasAvailableFollowUp(
 
   return allWords.some((nextWord) => {
     const normalized = nextWord.toUpperCase();
-    // Treat the candidate as already used, and exclude every used word.
-    // This prevents self-follows and dynamically blocks newly created dead ends.
     return (
       normalized.charAt(0) === lastChar &&
       normalized !== candidate &&
