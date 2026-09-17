@@ -326,16 +326,31 @@ img.emoji {
 .emoji-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
-  padding: 10px 14px;
+  gap: 8px;
+  padding: 12px 14px;
   overflow-y: auto;
   flex: 1;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+}
+.emoji-grid::-webkit-scrollbar {
+  width: 4px;
+}
+.emoji-grid::-webkit-scrollbar-track {
+  background: transparent;
+}
+.emoji-grid::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
+.emoji-grid::-webkit-scrollbar-thumb:hover {
+  background: var(--text-dim);
 }
 .emoji-cell {
   font-size: 26px;
   text-align: center;
-  padding: 10px 0 6px;
-  border-radius: 10px;
+  padding: 6px 0;
+  border-radius: 8px;
   background: var(--card-bg);
   border: 1px solid var(--border);
   cursor: pointer;
@@ -344,7 +359,7 @@ img.emoji {
   display: flex;
   align-items: center;
   justify-content: center;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 5 / 6;
 }
 .emoji-cell:hover:not(.disabled) {
   background: var(--card-hover);
